@@ -3,10 +3,10 @@ import { Pair, Token, Bundle } from '../types/schema'
 import { BigDecimal, Address, BigInt } from '@graphprotocol/graph-ts/index'
 import { ZERO_BD, factoryContract, ADDRESS_ZERO, ONE_BD } from './helpers'
 
-const WBNB_ADDRESS = '0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c'
-const BUSD_WBNB_PAIR = '0x1ebf0ee99971c6269062c3b480e8e23b7a74756b' // created 10008355
-const DAI_WBNB_PAIR = '0xf3010261b58b2874639ca2e860e9005e3be5de0b' // created block 10042267
-const USDT_WBNB_PAIR = '0x12e048d01535e2b49675d22078f64fd2307d8a0c' // created block 10093341
+const WBNB_ADDRESS = '0xae13d989dac2f0debff460ac112a837c89baa7cd'
+const BUSD_WBNB_PAIR = '0xc7ce7c885c7e29d913cb03a649bef6883c86d27d' // created 10008355
+const DAI_WBNB_PAIR = '0x315e14d384ae9c216b2a97b93f29f5c6497ded85' // created block 10042267
+const USDT_WBNB_PAIR = '0xf002991276611307df14040e4a3ea5362223a8cd' // created block 10093341
 
 // dummy for testing
 export function getBnbPriceInUSD(): BigDecimal {
@@ -17,11 +17,11 @@ export function getBnbPriceInUSD(): BigDecimal {
 
   // all 3 have been created
   if (daiPair !== null && busdPair !== null && usdtPair !== null) {
-    let totalLiquidityBNB = daiPair.reserve1.plus(busdPair.reserve0).plus(usdtPair.reserve1)
-    let daiWeight = daiPair.reserve1.div(totalLiquidityBNB)
+    let totalLiquidityBNB = daiPair.reserve0.plus(busdPair.reserve0).plus(usdtPair.reserve1)
+    let daiWeight = daiPair.reserve0.div(totalLiquidityBNB)
     let busdWeight = busdPair.reserve0.div(totalLiquidityBNB)
     let usdtWeight = usdtPair.reserve1.div(totalLiquidityBNB)
-    return daiPair.token0Price
+    return daiPair.token1Price
       .times(daiWeight)
       .plus(busdPair.token1Price.times(busdWeight))
       .plus(usdtPair.token0Price.times(usdtWeight))
@@ -41,10 +41,10 @@ export function getBnbPriceInUSD(): BigDecimal {
 
 // token where amounts should contribute to tracked volume and liquidity
 let WHITELIST: string[] = [
-  '0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c', // WBNB
-  '0x1af3f329e8be154074d8769d1ffa4ee058b1dbc3', // DAI
-  '0xe9e7cea3dedca5984780bafc599bd69add087d56', // BUSD
-  '0x55d398326f99059ff775485246999027b3197955' // USDT
+  '0xae13d989dac2f0debff460ac112a837c89baa7cd', // WBNB
+  '0xec5dcb5dbf4b114c9d0f65bccab49ec54f6a0867', // DAI
+  '0xed24fc36d5ee211ea25a80239fb8c4cfd80f12ee', // BUSD
+  '0x337610d27c682e347c9cd60bd4b3b107c9d34ddd' // USDT
 ]
 
 /**
