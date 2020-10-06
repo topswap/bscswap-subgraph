@@ -4,36 +4,24 @@ import { BigDecimal, Address, BigInt } from '@graphprotocol/graph-ts/index'
 import { ZERO_BD, factoryContract, ADDRESS_ZERO, ONE_BD } from './helpers'
 
 const WBNB_ADDRESS = '0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c'
-const BUSD_WBNB_PAIR = '0x1ebf0ee99971c6269062c3b480e8e23b7a74756b' // created 10008355
-const DAI_WBNB_PAIR = '0xf3010261b58b2874639ca2e860e9005e3be5de0b' // created block 10042267
-const USDT_WBNB_PAIR = '0x12e048d01535e2b49675d22078f64fd2307d8a0c' // created block 10093341
+const BUSD_WBNB_PAIR = '0x559e3d9611e9cb8a77c11335bdac49621382188b' // created 10008355
+const USDT_WBNB_PAIR = '0x9ec271c041a18aa7bef070a1f196eea1d06ab7cb' // created block 10093341
 
 // dummy for testing
 export function getBnbPriceInUSD(): BigDecimal {
   // fetch BNB prices for each stablecoin
   let usdtPair = Pair.load(USDT_WBNB_PAIR) // usdt is token0
   let busdPair = Pair.load(BUSD_WBNB_PAIR) // busd is token1
-  let daiPair = Pair.load(DAI_WBNB_PAIR) // dai is token0
 
-  // all 3 have been created
-  if (daiPair !== null && busdPair !== null && usdtPair !== null) {
-    let totalLiquidityBNB = daiPair.reserve1.plus(busdPair.reserve0).plus(usdtPair.reserve1)
-    let daiWeight = daiPair.reserve1.div(totalLiquidityBNB)
+  // all 2 have been created
+  if (busdPair !== null && usdtPair !== null) {
+    let totalLiquidityBNB = usdtPair.reserve1.plus(busdPair.reserve0)
     let busdWeight = busdPair.reserve0.div(totalLiquidityBNB)
     let usdtWeight = usdtPair.reserve1.div(totalLiquidityBNB)
-    return daiPair.token0Price
-      .times(daiWeight)
-      .plus(busdPair.token1Price.times(busdWeight))
-      .plus(usdtPair.token0Price.times(usdtWeight))
-    // busd and usdt have been created
-  } else if (busdPair !== null && usdtPair !== null) {
-    let totalLiquidityBNB = busdPair.reserve0.plus(usdtPair.reserve1)
-    let busdWeight = busdPair.reserve0.div(totalLiquidityBNB)
-    let usdtWeight = usdtPair.reserve1.div(totalLiquidityBNB)
-    return busdPair.token1Price.times(busdWeight).plus(usdtPair.token0Price.times(usdtWeight))
-    // usdt is the only pair so far
-  } else if (usdtPair !== null) {
-    return usdtPair.token0Price
+    return usdtPair.token0Price.times(usdtWeight).plus(busdPair.token1Price.times(busdWeight))
+    // busd is the only pair so far
+  } else if (busdPair !== null) {
+    return busdPair.token1Price
   } else {
     return ZERO_BD
   }
@@ -42,7 +30,6 @@ export function getBnbPriceInUSD(): BigDecimal {
 // token where amounts should contribute to tracked volume and liquidity
 let WHITELIST: string[] = [
   '0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c', // WBNB
-  '0x1af3f329e8be154074d8769d1ffa4ee058b1dbc3', // DAI
   '0xe9e7cea3dedca5984780bafc599bd69add087d56', // BUSD
   '0x55d398326f99059ff775485246999027b3197955' // USDT
 ]
